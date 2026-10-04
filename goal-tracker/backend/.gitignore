@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+
+# Segredos nunca entram no Git (AI_NOTES.md §9)
+.env
+.env.*
+!.env.example
+
+*.log
+.DS_Store

@@ -1,0 +1,24 @@
+services:
+  db:
+    image: postgres:18-alpine
+    container_name: goal-tracker-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: goals
+      POSTGRES_PASSWORD: goals
+      POSTGRES_DB: goal_tracker
+    ports:
+      - '5432:5432'
+    volumes:
+      - goal_tracker_pgdata:/var/lib/postgresql/data
+      # Cria `goal_tracker_test` na primeira subida do volume.
+      # Ver docker/initdb/01-create-test-db.sql para o motivo.
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U goals -d goal_tracker']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  goal_tracker_pgdata:

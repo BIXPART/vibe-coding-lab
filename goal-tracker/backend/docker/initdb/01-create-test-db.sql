@@ -1,0 +1,22 @@
+-- Cria o banco descartável dos testes de integração.
+--
+-- POR QUE UM BANCO SEPARADO
+-- `tests/integration/recurrence.test.ts` roda `sync({ force: true })` no
+-- `beforeAll` e `destroy({ force: true })` no `afterEach`. Apontar isso para o
+-- banco de desenvolvimento apagaria o seed (`npm run db:seed`) e qualquer dado
+-- de teste manual.
+--
+-- Este script roda APENAS na primeira inicialização do volume do Postgres. Se o
+-- volume já existe, rode o comando manualmente:
+--
+--   docker compose exec db createdb -U goals goal_tracker_test
+--
+-- Para PostgreSQL local (sem Docker), equivale a:
+--
+--   CREATE DATABASE goal_tracker_test OWNER goals;
+--
+-- Depois, aponte a variável (ver .env.example):
+--
+--   TEST_DATABASE_URL=postgres://goals:goals@localhost:5432/goal_tracker_test
+
+CREATE DATABASE goal_tracker_test OWNER goals;
