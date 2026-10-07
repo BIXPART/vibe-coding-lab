@@ -209,6 +209,30 @@ afetar os dados de desenvolvimento.
 
 | | |
 |---|---|
+| Root Directory | `ValiStock/backend` |
 | Build Command | `npm install` |
-| Start Command | `npm start` |
-| Variáveis | `NODE_ENV=production`, `JWT_SECRET=...`, `DATABASE_DIALECT=sqlite`, `DATABASE_PATH=./database/database.sqlite` |
+| Start Command | `npm run render-start` |
+| Variáveis (Environment) | `NODE_ENV=production`, `JWT_SECRET=...`, `DATABASE_DIALECT=sqlite`, `DATABASE_PATH=./database/database.sqlite` |
+
+O `render-start` executa `db:migrate` → `db:seed` → `node server.js`, garantindo que
+as tabelas e o usuário inicial existam antes do servidor subir. Migrations e seeds já
+executados são registrados no `SequelizeMeta` e não rodam duas vezes; o seeder do admin
+ainda verifica duplicidade por e-mail — portanto é seguro a cada deploy/restart.
+
+Gere um segredo forte para o `JWT_SECRET` (não reuse o de exemplo):
+
+```bash
+openssl rand -hex 32
+```
+
+> O `db:seed` carrega também os dados de demonstração (útil no MVP). Para manter
+> apenas o usuário inicial em produção, troque `npm run db:seed` por
+> `npx sequelize-cli db:seed --seed 20261007000001-initial-admin.js` no script
+> `render-start`.
+
+Usuário inicial após o deploy:
+
+```
+email:    admin@valistock.com
+senha:    admin123
+```

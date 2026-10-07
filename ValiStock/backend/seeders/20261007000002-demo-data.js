@@ -11,6 +11,17 @@ const bcrypt = require('bcryptjs');
 
 module.exports = {
   async up(queryInterface) {
+    // Idempotência: se os dados de demonstração já existem (independentemente
+    // do histórico no SequelizeMeta), não insere de novo.
+    const [[{ c }]] = await queryInterface.sequelize.query(
+      "SELECT COUNT(*) AS c FROM products WHERE barcode IN ('7894900011517','7891000100103','7898800022222')"
+    );
+
+    if (c > 0) {
+      console.log('Seeder: dados de demonstração já existem, ignorando.');
+      return;
+    }
+
     const now = new Date();
 
     // Categorias
